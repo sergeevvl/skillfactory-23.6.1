@@ -5,7 +5,14 @@ from extensions import APIException, CryptoConverter
 bot = telebot.TeleBot(TOKEN)
 
 
-@bot.message_handler(commands=['start', 'help'])
+@bot.message_handler(commands=['start'])
+def help(message: telebot.types.Message):
+    text = 'Данный бот предназначен для конвертации валют \n\
+Введите /help для отображения инструкции по работе'
+    bot.reply_to(message, text)
+
+
+@bot.message_handler(commands=['help'])
 def help(message: telebot.types.Message):
     text = 'Чтобы начать работу введите комманду боту в следующем формате:\n<имя валюты> \
 <в какую валюту перевести> \
@@ -34,7 +41,7 @@ def get_price(message: telebot.types.Message):
     except APIException as e:
         bot.reply_to(message, f'Ошибка пользователя\n{e}')
     except Exception:
-        bot.reply_to(message, f'Не удалось обработать команду\n{e}')
+        bot.reply_to(message, f'Не удалось обработать команду')
     else:
         text = f'Цена {amount} {base_currency} в {conv_currency} - {total_conv}'
         bot.send_message(message.chat.id, text)
